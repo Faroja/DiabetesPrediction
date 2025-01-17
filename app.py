@@ -4,7 +4,7 @@ import joblib
 import numpy as np
 
 # Load the trained model
-model = joblib.load('best_random_rest_model.pkl')
+model = joblib.load('best_random_forest_model.pkl')
 
 # Function to make predictions
 def predict_diabetes(data):
