@@ -1,25 +1,29 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import numpy as np
 
-# Load the trained model
-model = joblib.load('best_random_forest_model.pkl')
-
-# Function to make predictions
-def predict_diabetes(data):
-    # Predict whether the person has diabetes (1) or not (0)
-    prediction = model.predict(data)
-    return prediction
+# Function to try loading models one by one
+def try_loading_model():
+    models = ['best_random_forest_model.pkl', 'best_xgboost_model.pkl', 'best_voting_model.pkl']
+    
+    for model_file in models:
+        try:
+            model = joblib.load(model_file)
+            st.write(f"Model '{model_file}' loaded successfully!")
+            return model
+        except Exception as e:
+            st.write(f"Error loading model '{model_file}': {e}")
+            continue
+    return None
 
 # Streamlit UI
-st.title('Prediksi Diabetes')
+st.title('Diabetes Prediction Model')
 
 st.write("""
-    Masukkan data berikut untuk memprediksi apakah seseorang memiliki diabetes atau tidak.
-    """)
+    Attempting to load the first available model from a list.
+""")
 
-# Input fields for user to enter data
+# Input fields for prediction
 glucose = st.number_input('Glucose Level (mg/dL)', min_value=0, max_value=200, step=1)
 blood_pressure = st.number_input('Blood Pressure (mm Hg)', min_value=0, max_value=200, step=1)
 skin_thickness = st.number_input('Skin Thickness (mm)', min_value=0, max_value=100, step=1)
@@ -32,11 +36,17 @@ age = st.number_input('Age (years)', min_value=0, max_value=100, step=1)
 input_data = pd.DataFrame([[glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]], 
                           columns=['GLUCOSE', 'BLOODPRESSURE', 'SKINTHICKNESS', 'INSULIN', 'BMI', 'DIABETESPEDIGREEFUNCTION', 'AGE'])
 
-# Predict when the user presses the button
-if st.button('Prediksi'):
-    prediction = predict_diabetes(input_data)
-    
-    if prediction == 1:
-        st.write('Hasil Prediksi: Positif Diabetes')
-    else:
-        st.write('Hasil Prediksi: Negatif Diabetes')
+# Try loading the model
+model = try_loading_model()
+
+# Make prediction if model is loaded
+if model is not None:
+    if st.button('Predict'):
+        prediction = model.predict(input_data)
+        
+        if prediction == 1:
+            st.write('Hasil Prediksi: Positif Diabetes')
+        else:
+            st.write('Hasil Prediksi: Negatif Diabetes')
+else:
+    st.write("No model was loaded. Please check your models.")
