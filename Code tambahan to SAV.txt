@@ -1,0 +1,15 @@
+import pickle
+
+# Save Random Forest Model as .sav
+with open('best_random_forest_model.sav', 'wb') as f:
+    pickle.dump(best_model_rf, f)
+
+# Save XGBoost Model as .sav
+with open('best_xgboost_model.sav', 'wb') as f:
+    pickle.dump(best_model_xgb, f)
+
+# Save Voting Classifier Model as .sav
+with open('best_voting_model.sav', 'wb') as f:
+    pickle.dump(voting_model, f)
+
+print("Models saved successfully in .sav format!")
