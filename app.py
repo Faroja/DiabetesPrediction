@@ -4,7 +4,7 @@ import joblib
 
 # Function to try loading models one by one
 def try_loading_model():
-    models = ['best_random_forest_model.pkl', 'best_xgboost_model.pkl', 'best_voting_model.pkl']
+    models = ['best_random_forest_model.sav', 'best_xgboost_model.sav', 'best_voting_model.sav']
     
     for model_file in models:
         try:
